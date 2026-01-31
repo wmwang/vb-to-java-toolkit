@@ -69,8 +69,8 @@
     "total_modules": 3,
     "total_edges": 0,
     "root_modules": [
-      "frmProduct",
       "OrderModule",
+      "frmProduct",
       "Customer"
     ],
     "leaf_modules": [

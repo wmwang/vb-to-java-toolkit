@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """
-VB to Java Migration Toolkit - CLI 命令列工具
+VB Legacy Analyzer - AI 輔助遷移分析工具
 
-核心命令：
-    python cli.py discover ./legacy-vb        # AI 分析依賴，建議遷移順序
-    python cli.py understand ./legacy-vb      # AI 解說業務邏輯
-    python cli.py analyze ./legacy-vb         # 靜態分析
+推薦命令：
+    python cli.py full ./legacy-vb    # 一次執行完整 AI 分析
 """
 
 import sys
@@ -309,22 +307,60 @@ def understand_module(project_path: str, output_dir: str, module_filter: Optiona
     print(f"\n✅ Understand 完成！")
 
 
+def full_analysis(project_path: str, output_dir: str):
+    """
+    [推薦] 完整 AI 分析 = discover + understand
+    """
+    print()
+    print("█" * 60)
+    print("🚀 VB Legacy Analyzer - 完整 AI 分析")
+    print("█" * 60)
+    print()
+    
+    # Step 1: Discover
+    print("[█████░░░░░] Phase 1/2: Discover")
+    discover_dependencies(project_path, output_dir)
+    
+    print()
+    print()
+    
+    # Step 2: Understand
+    print("[██████████] Phase 2/2: Understand")
+    understand_module(project_path, output_dir, None)
+    
+    print()
+    print("█" * 60)
+    print("🎉 完整 AI 分析完成！")
+    print("█" * 60)
+    print()
+    print("📂 輸出檔案：")
+    print(f"   • {output_dir}/dependency_graph.json")
+    print(f"   • {output_dir}/dependency_graph.mermaid")
+    print(f"   • {output_dir}/migration_advice.md")
+    print(f"   • {output_dir}/business_rules_explained.md")
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="VB to Java Migration Toolkit - AI 輔助遷移工具",
+        description="VB Legacy Analyzer - AI 輔助遷移分析工具",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-核心命令（AI 驅動）:
-  python cli.py discover ./legacy-vb     # AI 分析依賴，建議遷移順序
-  python cli.py understand ./legacy-vb   # AI 解說業務邏輯
+推薦命令：
+  python cli.py full ./legacy-vb        # ⏩ 完整 AI 分析（推薦）
 
-輔助命令:
-  python cli.py analyze ./legacy-vb      # 靜態分析（不調用 AI）
-  python cli.py scan ./legacy-vb         # 僅掃描專案結構
+分步命令：
+  python cli.py discover ./legacy-vb    # AI 分析依賴
+  python cli.py understand ./legacy-vb  # AI 解說業務邏輯
         """
     )
     
     subparsers = parser.add_subparsers(dest="command", help="可用命令")
+    
+    # full 命令 [推薦]
+    full_parser = subparsers.add_parser("full", help="⏩ 完整 AI 分析（推薦）")
+    full_parser.add_argument("project_path", help="VB 專案路徑")
+    full_parser.add_argument("-o", "--output", default="./output", help="輸出目錄")
     
     # analyze 命令
     analyze_parser = subparsers.add_parser("analyze", help="分析 VB 專案")
@@ -423,6 +459,14 @@ def main():
             print(f"❌ 路徑不存在: {project}")
             return 1
         understand_module(args.project_path, args.output, args.module)
+        return 0
+    
+    elif args.command == "full":
+        project = Path(args.project_path)
+        if not project.exists():
+            print(f"❌ 路徑不存在: {project}")
+            return 1
+        full_analysis(args.project_path, args.output)
         return 0
     
     else:
