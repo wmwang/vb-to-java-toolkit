@@ -43,3 +43,4 @@ data/
 # OS
 .DS_Store
 Thumbs.db
+logs/llm_debug.log
