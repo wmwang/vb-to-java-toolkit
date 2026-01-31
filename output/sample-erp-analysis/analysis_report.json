@@ -1,0 +1,1388 @@
+{
+  "project_path": "/Users/isosoman/Documents/repo/vb-to-java-toolkit/examples/sample-erp",
+  "file_statistics": {
+    "total_files": 3,
+    "by_type": {
+      "class": 1,
+      "module": 1,
+      "form": 1
+    },
+    "total_lines": 592,
+    "encodings": {
+      "utf-8": 3
+    }
+  },
+  "modules": [
+    {
+      "name": "frmProduct",
+      "file_type": "frm",
+      "variables": [
+        {
+          "name": "m_Connection",
+          "data_type": "ADODB.Connection",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 24
+        },
+        {
+          "name": "m_CurrentProductID",
+          "data_type": "Long",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 25
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 40
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 80
+        },
+        {
+          "name": "ProductID",
+          "data_type": "Long",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 97
+        },
+        {
+          "name": "rs",
+          "data_type": "ADODB.Recordset",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 109
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 110
+        },
+        {
+          "name": "rs",
+          "data_type": "ADODB.Recordset",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 132
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 133
+        },
+        {
+          "name": "i",
+          "data_type": "Integer",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 149
+        },
+        {
+          "name": "rs",
+          "data_type": "ADODB.Recordset",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 174
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 175
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 193
+        }
+      ],
+      "constants": [],
+      "functions": [
+        {
+          "name": "Form_Load",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 30,
+          "end_line": 35,
+          "sql_statements": [],
+          "called_functions": []
+        },
+        {
+          "name": "cmdSave_Click",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 36,
+          "end_line": 68,
+          "sql_statements": [
+            "INSERT INTO Products (ProductName, CategoryID, UnitPrice, StockQuantity, IsActive)",
+            "UPDATE Products SET"
+          ],
+          "called_functions": [
+            "CDbl",
+            "CInt",
+            "IIf",
+            "ItemData",
+            "Products",
+            "VALUES"
+          ]
+        },
+        {
+          "name": "cmdDelete_Click",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 69,
+          "end_line": 92,
+          "sql_statements": [
+            "DELETE FROM Products WHERE ProductID ="
+          ],
+          "called_functions": [
+            "MsgBox"
+          ]
+        },
+        {
+          "name": "lstProducts_Click",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 93,
+          "end_line": 101,
+          "sql_statements": [],
+          "called_functions": [
+            "CLng",
+            "ItemData",
+            "LoadProductDetail"
+          ]
+        },
+        {
+          "name": "LoadProducts",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 106,
+          "end_line": 128,
+          "sql_statements": [
+            "SELECT ProductID, ProductName, UnitPrice, StockQuantity"
+          ],
+          "called_functions": [
+            "CLng",
+            "Format",
+            "ItemData",
+            "rs"
+          ]
+        },
+        {
+          "name": "LoadProductDetail",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [
+            {
+              "name": "ProductID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 129,
+          "end_line": 160,
+          "sql_statements": [
+            "SELECT ProductID, ProductName, CategoryID, UnitPrice, StockQuantity, IsActive"
+          ],
+          "called_functions": [
+            "CBool",
+            "CLng",
+            "CStr",
+            "IIf",
+            "ItemData",
+            "rs"
+          ]
+        },
+        {
+          "name": "ClearForm",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 161,
+          "end_line": 170,
+          "sql_statements": [],
+          "called_functions": []
+        },
+        {
+          "name": "CheckStock",
+          "visibility": "Public",
+          "is_sub": false,
+          "return_type": "Boolean",
+          "parameters": [
+            {
+              "name": "ProductID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            },
+            {
+              "name": "RequiredQty",
+              "data_type": "Integer",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 173,
+          "end_line": 189,
+          "sql_statements": [
+            "SELECT StockQuantity FROM Products WHERE ProductID ="
+          ],
+          "called_functions": [
+            "CInt",
+            "rs"
+          ]
+        },
+        {
+          "name": "UpdateStock",
+          "visibility": "Public",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [
+            {
+              "name": "ProductID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            },
+            {
+              "name": "Quantity",
+              "data_type": "Integer",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 192,
+          "end_line": 206,
+          "sql_statements": [
+            "UPDATE Products SET StockQuantity = StockQuantity +"
+          ],
+          "called_functions": [
+            "Abs",
+            "CheckStock"
+          ]
+        },
+        {
+          "name": "SetConnection",
+          "visibility": "Public",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [
+            {
+              "name": "conn",
+              "data_type": "ADODB",
+              "is_optional": false,
+              "is_byref": true,
+              "default_value": null
+            }
+          ],
+          "start_line": 207,
+          "end_line": 210,
+          "sql_statements": [],
+          "called_functions": []
+        }
+      ],
+      "properties": [],
+      "references": [
+        "ADODB.Connection",
+        "ADODB.Recordset"
+      ],
+      "option_explicit": true
+    },
+    {
+      "name": "Customer",
+      "file_type": "cls",
+      "variables": [
+        {
+          "name": "m_CustomerID",
+          "data_type": "Long",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 8
+        },
+        {
+          "name": "m_CustomerName",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 9
+        },
+        {
+          "name": "m_Email",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 10
+        },
+        {
+          "name": "m_MemberLevel",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 11
+        },
+        {
+          "name": "m_CreateDate",
+          "data_type": "Date",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 12
+        },
+        {
+          "name": "m_TotalPurchase",
+          "data_type": "Double",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 13
+        },
+        {
+          "name": "m_Connection",
+          "data_type": "ADODB.Connection",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 16
+        },
+        {
+          "name": "rs",
+          "data_type": "ADODB.Recordset",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 52
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 54
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 92
+        }
+      ],
+      "constants": [],
+      "functions": [
+        {
+          "name": "LoadFromDB",
+          "visibility": "Public",
+          "is_sub": false,
+          "return_type": "Boolean",
+          "parameters": [
+            {
+              "name": "CustomerID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 50,
+          "end_line": 87,
+          "sql_statements": [
+            "SELECT CustomerID, CustomerName, Email, MemberLevel, CreateDate, TotalPurchase"
+          ],
+          "called_functions": [
+            "CDate",
+            "CDbl",
+            "CLng",
+            "CStr",
+            "IsNull",
+            "rs"
+          ]
+        },
+        {
+          "name": "SaveToDB",
+          "visibility": "Public",
+          "is_sub": false,
+          "return_type": "Boolean",
+          "parameters": [],
+          "start_line": 90,
+          "end_line": 117,
+          "sql_statements": [
+            "INSERT INTO Customers (CustomerName, Email, MemberLevel, CreateDate, TotalPurchase)",
+            "UPDATE Customers SET"
+          ],
+          "called_functions": [
+            "Customers",
+            "Format",
+            "VALUES"
+          ]
+        },
+        {
+          "name": "CalculateDiscount",
+          "visibility": "Public",
+          "is_sub": false,
+          "return_type": "Double",
+          "parameters": [],
+          "start_line": 120,
+          "end_line": 131,
+          "sql_statements": [],
+          "called_functions": []
+        },
+        {
+          "name": "UpgradeMemberLevel",
+          "visibility": "Public",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 134,
+          "end_line": 146,
+          "sql_statements": [],
+          "called_functions": []
+        },
+        {
+          "name": "Class_Initialize",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 151,
+          "end_line": 158,
+          "sql_statements": [],
+          "called_functions": []
+        },
+        {
+          "name": "Class_Terminate",
+          "visibility": "Private",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [],
+          "start_line": 159,
+          "end_line": 162,
+          "sql_statements": [],
+          "called_functions": []
+        },
+        {
+          "name": "SetConnection",
+          "visibility": "Public",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [
+            {
+              "name": "conn",
+              "data_type": "ADODB",
+              "is_optional": false,
+              "is_byref": true,
+              "default_value": null
+            }
+          ],
+          "start_line": 163,
+          "end_line": 166,
+          "sql_statements": [],
+          "called_functions": []
+        }
+      ],
+      "properties": [
+        {
+          "name": "CustomerID",
+          "data_type": "Long",
+          "has_get": true,
+          "has_let": true,
+          "has_set": false,
+          "visibility": "Public"
+        },
+        {
+          "name": "CustomerName",
+          "data_type": "String",
+          "has_get": true,
+          "has_let": true,
+          "has_set": false,
+          "visibility": "Public"
+        },
+        {
+          "name": "MemberLevel",
+          "data_type": "String",
+          "has_get": true,
+          "has_let": true,
+          "has_set": false,
+          "visibility": "Public"
+        }
+      ],
+      "references": [
+        "ADODB.Connection",
+        "ADODB.Recordset"
+      ],
+      "option_explicit": true
+    },
+    {
+      "name": "OrderModule",
+      "file_type": "bas",
+      "variables": [
+        {
+          "name": "g_Connection",
+          "data_type": "ADODB.Connection",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 8
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 18
+        },
+        {
+          "name": "OrderID",
+          "data_type": "Long",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 20
+        },
+        {
+          "name": "TotalAmount",
+          "data_type": "Double",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 21
+        },
+        {
+          "name": "i",
+          "data_type": "Integer",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 22
+        },
+        {
+          "name": "rs",
+          "data_type": "ADODB.Recordset",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 38
+        },
+        {
+          "name": "rs",
+          "data_type": "ADODB.Recordset",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 62
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 64
+        },
+        {
+          "name": "Subtotal",
+          "data_type": "Double",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 65
+        },
+        {
+          "name": "DiscountRate",
+          "data_type": "Double",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 66
+        },
+        {
+          "name": "Tax",
+          "data_type": "Double",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 67
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 133
+        },
+        {
+          "name": "rs",
+          "data_type": "ADODB.Recordset",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 135
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 170
+        },
+        {
+          "name": "sql",
+          "data_type": "String",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 186
+        },
+        {
+          "name": "rs",
+          "data_type": "ADODB.Recordset",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": null,
+          "line_number": 195
+        }
+      ],
+      "constants": [
+        {
+          "name": "TAX_RATE",
+          "data_type": "Double",
+          "visibility": "Private",
+          "is_array": false,
+          "default_value": "0.05",
+          "line_number": 9
+        }
+      ],
+      "functions": [
+        {
+          "name": "CreateOrder",
+          "visibility": "Public",
+          "is_sub": false,
+          "return_type": "OrderItem",
+          "parameters": [
+            {
+              "name": "CustomerID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            },
+            {
+              "name": "Items",
+              "data_type": "Variant",
+              "is_optional": false,
+              "is_byref": true,
+              "default_value": null
+            }
+          ],
+          "start_line": 16,
+          "end_line": 57,
+          "sql_statements": [
+            "SELECT @@IDENTITY AS NewID",
+            "INSERT INTO Orders (CustomerID, OrderDate, TotalAmount, Status)",
+            "INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice)"
+          ],
+          "called_functions": [
+            "CLng",
+            "Execute",
+            "Format",
+            "Items",
+            "LBound",
+            "OrderDetails",
+            "Orders",
+            "UBound",
+            "VALUES",
+            "rs"
+          ]
+        },
+        {
+          "name": "CalculateOrderTotal",
+          "visibility": "Public",
+          "is_sub": false,
+          "return_type": "Double",
+          "parameters": [
+            {
+              "name": "OrderID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 60,
+          "end_line": 109,
+          "sql_statements": [
+            "SELECT SUM(Quantity * UnitPrice) AS Subtotal",
+            "SELECT c.MemberLevel, c.TotalPurchase"
+          ],
+          "called_functions": [
+            "CDbl",
+            "CStr",
+            "Execute",
+            "GetDiscountRate",
+            "IsNull",
+            "SUM",
+            "rs"
+          ]
+        },
+        {
+          "name": "GetDiscountRate",
+          "visibility": "Private",
+          "is_sub": false,
+          "return_type": "Double",
+          "parameters": [
+            {
+              "name": "MemberLevel",
+              "data_type": "String",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            },
+            {
+              "name": "TotalPurchase",
+              "data_type": "Double",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 112,
+          "end_line": 128,
+          "sql_statements": [],
+          "called_functions": []
+        },
+        {
+          "name": "CancelOrder",
+          "visibility": "Public",
+          "is_sub": false,
+          "return_type": "Boolean",
+          "parameters": [
+            {
+              "name": "OrderID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 131,
+          "end_line": 166,
+          "sql_statements": [
+            "SELECT Status FROM Orders WHERE OrderID =",
+            "UPDATE Orders SET Status = 'CANCELLED',"
+          ],
+          "called_functions": [
+            "CStr",
+            "Execute",
+            "Format",
+            "rs"
+          ]
+        },
+        {
+          "name": "UpdateOrderStatus",
+          "visibility": "Public",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [
+            {
+              "name": "OrderID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            },
+            {
+              "name": "NewStatus",
+              "data_type": "String",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 169,
+          "end_line": 182,
+          "sql_statements": [
+            "UPDATE Orders SET Status = '"
+          ],
+          "called_functions": []
+        },
+        {
+          "name": "GetCustomerOrders",
+          "visibility": "Public",
+          "is_sub": false,
+          "return_type": "ADODB",
+          "parameters": [
+            {
+              "name": "CustomerID",
+              "data_type": "Long",
+              "is_optional": false,
+              "is_byref": false,
+              "default_value": null
+            }
+          ],
+          "start_line": 185,
+          "end_line": 201,
+          "sql_statements": [
+            "SELECT o.OrderID, o.OrderDate, o.TotalAmount, o.Status,"
+          ],
+          "called_functions": [
+            "COUNT"
+          ]
+        },
+        {
+          "name": "InitModule",
+          "visibility": "Public",
+          "is_sub": true,
+          "return_type": null,
+          "parameters": [
+            {
+              "name": "conn",
+              "data_type": "ADODB",
+              "is_optional": false,
+              "is_byref": true,
+              "default_value": null
+            }
+          ],
+          "start_line": 204,
+          "end_line": 206,
+          "sql_statements": [],
+          "called_functions": []
+        }
+      ],
+      "properties": [],
+      "references": [
+        "ADODB.Connection",
+        "ADODB.Recordset",
+        "ItemCount",
+        "NewID",
+        "OrderItem",
+        "Subtotal"
+      ],
+      "option_explicit": true
+    }
+  ],
+  "sql_summary": {
+    "total_sql_statements": 0,
+    "total_tables": 4,
+    "total_columns": 15,
+    "tables": [
+      "Products",
+      "Customers",
+      "Orders",
+      "OrderDetails"
+    ],
+    "columns_with_types": {
+      "ProductName": {
+        "type": "String",
+        "nullable": false
+      },
+      "UnitPrice": {
+        "type": "String",
+        "nullable": false
+      },
+      "ProductID": {
+        "type": "Long",
+        "nullable": false
+      },
+      "StockQuantity": {
+        "type": "Integer",
+        "nullable": false
+      },
+      "IsActive": {
+        "type": "Boolean",
+        "nullable": false
+      },
+      "CategoryID": {
+        "type": "Long",
+        "nullable": false
+      },
+      "CustomerID": {
+        "type": "Long",
+        "nullable": false
+      },
+      "CustomerName": {
+        "type": "String",
+        "nullable": false
+      },
+      "Email": {
+        "type": "String",
+        "nullable": false
+      },
+      "MemberLevel": {
+        "type": "String",
+        "nullable": false
+      },
+      "CreateDate": {
+        "type": "Date",
+        "nullable": false
+      },
+      "TotalPurchase": {
+        "type": "Double",
+        "nullable": true
+      },
+      "NewID": {
+        "type": "Long",
+        "nullable": false
+      },
+      "Subtotal": {
+        "type": "Double",
+        "nullable": true
+      },
+      "Status": {
+        "type": "String",
+        "nullable": false
+      }
+    }
+  },
+  "schema": {
+    "tables": {
+      "Products": {
+        "name": "Products",
+        "columns": {},
+        "usage_count": 1,
+        "source_files": [
+          "ProductForm.frm"
+        ]
+      },
+      "Customers": {
+        "name": "Customers",
+        "columns": {},
+        "usage_count": 1,
+        "source_files": [
+          "Customer.cls"
+        ]
+      },
+      "Orders": {
+        "name": "Orders",
+        "columns": {},
+        "usage_count": 1,
+        "source_files": [
+          "OrderModule.bas"
+        ]
+      },
+      "OrderDetails": {
+        "name": "OrderDetails",
+        "columns": {},
+        "usage_count": 1,
+        "source_files": [
+          "OrderModule.bas"
+        ]
+      }
+    },
+    "summary": {
+      "total_tables": 4,
+      "total_columns": 0
+    }
+  },
+  "business_rules": {
+    "total_rules": 18,
+    "by_type": {
+      "decision": 10,
+      "calculation": 7,
+      "validation": 1
+    },
+    "rules": [
+      {
+        "name": "LoadProductDetail 決策邏輯",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "LoadProductDetail",
+        "source_file": "ProductForm.frm",
+        "decision_table": [
+          {
+            "condition": "Not rs.EOF",
+            "result": "m_CurrentProductID = CLng(rs(\"ProductID\"))"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF Not rs.EOF THEN\n    m_CurrentProductID = CLng(rs(\"ProductID\"))\nEND IF"
+      },
+      {
+        "name": "計算: ListIndex",
+        "rule_type": "calculation",
+        "description": "",
+        "source_function": "ClearForm",
+        "source_file": "ProductForm.frm",
+        "decision_table": [],
+        "formula": "-1",
+        "input_variables": [],
+        "output_variable": "ListIndex",
+        "pseudocode": ""
+      },
+      {
+        "name": "CheckStock 決策邏輯",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "CheckStock",
+        "source_file": "ProductForm.frm",
+        "decision_table": [
+          {
+            "condition": "Not rs.EOF",
+            "result": "CheckStock = (CInt(rs(\"StockQuantity\")) >= RequiredQty)"
+          },
+          {
+            "condition": "其他情況",
+            "result": "CheckStock = False"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF Not rs.EOF THEN\n    CheckStock = (CInt(rs(\"StockQuantity\")) >= RequiredQty)\nELSE\n    CheckStock = False\nEND IF"
+      },
+      {
+        "name": "UpdateStock 決策邏輯",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "UpdateStock",
+        "source_file": "ProductForm.frm",
+        "decision_table": [
+          {
+            "condition": "Quantity < 0",
+            "result": "If Not CheckStock(ProductID, Abs(Quantity)) Then"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF Quantity < 0 THEN\n    If Not CheckStock(ProductID, Abs(Quantity)) Then\nEND IF"
+      },
+      {
+        "name": "計算: sql",
+        "rule_type": "calculation",
+        "description": "",
+        "source_function": "UpdateStock",
+        "source_file": "ProductForm.frm",
+        "decision_table": [],
+        "formula": "\"UPDATE Products SET StockQuantity = StockQuantity + \" & Quantity & _",
+        "input_variables": [
+          "Products",
+          "UPDATE",
+          "_",
+          "Quantity",
+          "StockQuantity",
+          "SET"
+        ],
+        "output_variable": "sql",
+        "pseudocode": ""
+      },
+      {
+        "name": "驗證: 數值範圍檢查",
+        "rule_type": "validation",
+        "description": "數值範圍檢查",
+        "source_function": "UpdateStock",
+        "source_file": "ProductForm.frm",
+        "decision_table": [],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": ""
+      },
+      {
+        "name": "SaveToDB 決策邏輯",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "SaveToDB",
+        "source_file": "Customer.cls",
+        "decision_table": [
+          {
+            "condition": "m_CustomerID = 0",
+            "result": "sql = \"INSERT INTO Customers (CustomerName, Email, MemberLevel, CreateDate, TotalPurchase) \" & _"
+          },
+          {
+            "condition": "其他情況",
+            "result": "sql = \"UPDATE Customers SET \" & _"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF m_CustomerID = 0 THEN\n    sql = \"INSERT INTO Customers (CustomerName, Email, MemberLevel, CreateDate, TotalPurchase) \" & _\nELSE\n    sql = \"UPDATE Customers SET \" & _\nEND IF"
+      },
+      {
+        "name": "CalculateDiscount 決策邏輯",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "CalculateDiscount",
+        "source_file": "Customer.cls",
+        "decision_table": [
+          {
+            "condition": "m_MemberLevel = \"VIP\" And m_TotalPurchase > 10000",
+            "result": "CalculateDiscount = 0.15  ' VIP 且消費超過 10000，享 15% 折扣"
+          },
+          {
+            "condition": "m_MemberLevel = \"VIP\"",
+            "result": "CalculateDiscount = 0.1   ' VIP 會員享 10% 折扣"
+          },
+          {
+            "condition": "m_TotalPurchase > 5000",
+            "result": "CalculateDiscount = 0.05  ' 消費超過 5000 享 5% 折扣"
+          },
+          {
+            "condition": "其他情況",
+            "result": "CalculateDiscount = 0     ' 無折扣"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF m_MemberLevel = \"VIP\" And m_TotalPurchase > 10000 THEN\n    CalculateDiscount = 0.15  ' VIP 且消費超過 10000，享 15% 折扣\nELSE IF m_MemberLevel = \"VIP\" THEN\n    CalculateDiscount = 0.1   ' VIP 會員享 10% 折扣\nELSE IF m_TotalPurchase > 5000 THEN\n    CalculateDiscount = 0.05  ' 消費超過 5000 享 5% 折扣\nELSE\n    CalculateDiscount = 0     ' 無折扣\nEND IF"
+      },
+      {
+        "name": "UpgradeMemberLevel 狀態邏輯 (m_TotalPurchase)",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "UpgradeMemberLevel",
+        "source_file": "Customer.cls",
+        "decision_table": [
+          {
+            "condition": "m_TotalPurchase = Is >= 50000",
+            "result": "m_MemberLevel = \"PLATINUM\""
+          },
+          {
+            "condition": "m_TotalPurchase = Is >= 20000",
+            "result": "m_MemberLevel = \"VIP\""
+          },
+          {
+            "condition": "m_TotalPurchase = Is >= 5000",
+            "result": "m_MemberLevel = \"GOLD\""
+          },
+          {
+            "condition": "m_TotalPurchase = Else",
+            "result": "m_MemberLevel = \"STANDARD\""
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF m_TotalPurchase = Is >= 50000 THEN\n    m_MemberLevel = \"PLATINUM\"\nELSE IF m_TotalPurchase = Is >= 20000 THEN\n    m_MemberLevel = \"VIP\"\nELSE IF m_TotalPurchase = Is >= 5000 THEN\n    m_MemberLevel = \"GOLD\"\nELSE IF m_TotalPurchase = Else THEN\n    m_MemberLevel = \"STANDARD\"\nEND IF"
+      },
+      {
+        "name": "計算: TotalAmount",
+        "rule_type": "calculation",
+        "description": "",
+        "source_function": "CreateOrder",
+        "source_file": "OrderModule.bas",
+        "decision_table": [],
+        "formula": "TotalAmount + (Items(i).Quantity * Items(i).UnitPrice)",
+        "input_variables": [
+          "Items",
+          "TotalAmount",
+          "UnitPrice",
+          "Quantity",
+          "i"
+        ],
+        "output_variable": "TotalAmount",
+        "pseudocode": ""
+      },
+      {
+        "name": "CalculateOrderTotal 決策邏輯",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "CalculateOrderTotal",
+        "source_file": "OrderModule.bas",
+        "decision_table": [
+          {
+            "condition": "Not IsNull(rs(\"Subtotal\"))",
+            "result": "Subtotal = CDbl(rs(\"Subtotal\"))"
+          },
+          {
+            "condition": "其他情況",
+            "result": "Subtotal = 0"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF Not IsNull(rs(\"Subtotal\")) THEN\n    Subtotal = CDbl(rs(\"Subtotal\"))\nELSE\n    Subtotal = 0\nEND IF"
+      },
+      {
+        "name": "CalculateOrderTotal 決策邏輯",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "CalculateOrderTotal",
+        "source_file": "OrderModule.bas",
+        "decision_table": [
+          {
+            "condition": "Not rs.EOF",
+            "result": "DiscountRate = GetDiscountRate(CStr(rs(\"MemberLevel\")), CDbl(rs(\"TotalPurchase\")))"
+          },
+          {
+            "condition": "其他情況",
+            "result": "DiscountRate = 0"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF Not rs.EOF THEN\n    DiscountRate = GetDiscountRate(CStr(rs(\"MemberLevel\")), CDbl(rs(\"TotalPurchase\")))\nELSE\n    DiscountRate = 0\nEND IF"
+      },
+      {
+        "name": "計算: sql",
+        "rule_type": "calculation",
+        "description": "",
+        "source_function": "CalculateOrderTotal",
+        "source_file": "OrderModule.bas",
+        "decision_table": [],
+        "formula": "\"SELECT SUM(Quantity * UnitPrice) AS Subtotal \" & _",
+        "input_variables": [
+          "SELECT",
+          "Subtotal",
+          "SUM",
+          "_",
+          "AS",
+          "Quantity",
+          "UnitPrice"
+        ],
+        "output_variable": "sql",
+        "pseudocode": ""
+      },
+      {
+        "name": "計算: Tax",
+        "rule_type": "calculation",
+        "description": "",
+        "source_function": "CalculateOrderTotal",
+        "source_file": "OrderModule.bas",
+        "decision_table": [],
+        "formula": "Subtotal * TAX_RATE",
+        "input_variables": [
+          "TAX_RATE",
+          "Subtotal"
+        ],
+        "output_variable": "Tax",
+        "pseudocode": ""
+      },
+      {
+        "name": "計算: 最終金額",
+        "rule_type": "calculation",
+        "description": "",
+        "source_function": "CalculateOrderTotal",
+        "source_file": "OrderModule.bas",
+        "decision_table": [],
+        "formula": "小計 - 折扣 + 稅金",
+        "input_variables": [],
+        "output_variable": "最終金額",
+        "pseudocode": ""
+      },
+      {
+        "name": "計算: CalculateOrderTotal",
+        "rule_type": "calculation",
+        "description": "",
+        "source_function": "CalculateOrderTotal",
+        "source_file": "OrderModule.bas",
+        "decision_table": [],
+        "formula": "Subtotal * (1 - DiscountRate) + Tax",
+        "input_variables": [
+          "Tax",
+          "DiscountRate",
+          "Subtotal"
+        ],
+        "output_variable": "CalculateOrderTotal",
+        "pseudocode": ""
+      },
+      {
+        "name": "GetDiscountRate 決策邏輯",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "GetDiscountRate",
+        "source_file": "OrderModule.bas",
+        "decision_table": [
+          {
+            "condition": "TotalPurchase > 10000",
+            "result": "GetDiscountRate = 0.15"
+          },
+          {
+            "condition": "其他情況",
+            "result": "GetDiscountRate = 0.1"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF TotalPurchase > 10000 THEN\n    GetDiscountRate = 0.15\nELSE\n    GetDiscountRate = 0.1\nEND IF"
+      },
+      {
+        "name": "GetDiscountRate 狀態邏輯 (MemberLevel)",
+        "rule_type": "decision",
+        "description": "",
+        "source_function": "GetDiscountRate",
+        "source_file": "OrderModule.bas",
+        "decision_table": [
+          {
+            "condition": "MemberLevel = \"PLATINUM\"",
+            "result": "GetDiscountRate = 0.2"
+          },
+          {
+            "condition": "MemberLevel = \"VIP\"",
+            "result": "GetDiscountRate = 0.15"
+          },
+          {
+            "condition": "MemberLevel = \"GOLD\"",
+            "result": "GetDiscountRate = 0.05"
+          },
+          {
+            "condition": "MemberLevel = Else",
+            "result": "GetDiscountRate = 0"
+          }
+        ],
+        "formula": "",
+        "input_variables": [],
+        "output_variable": "",
+        "pseudocode": "IF MemberLevel = \"PLATINUM\" THEN\n    GetDiscountRate = 0.2\nELSE IF MemberLevel = \"VIP\" THEN\n    GetDiscountRate = 0.15\nELSE IF MemberLevel = \"GOLD\" THEN\n    GetDiscountRate = 0.05\nELSE IF MemberLevel = Else THEN\n    GetDiscountRate = 0\nEND IF"
+      }
+    ]
+  }
+}

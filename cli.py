@@ -1,0 +1,273 @@
+#!/usr/bin/env python3
+"""
+VB to Java Migration Toolkit - CLI 命令列工具
+
+使用方式：
+    poetry run python cli.py analyze /path/to/vb/project
+    poetry run python cli.py analyze /path/to/vb/project --batch-size 50
+    poetry run python cli.py analyze /path/to/vb/project --by-module
+"""
+
+import sys
+import asyncio
+from pathlib import Path
+from typing import Optional
+import argparse
+
+from src.parsers import VBScanner, VBParser
+from src.extractors import SQLExtractor, SchemaInferrer, BusinessLogicExtractor
+from src.analyzer import VBProjectAnalyzer
+
+
+def discover_modules(project_path: Path) -> list[str]:
+    """自動發現專案中的模組目錄"""
+    vb_extensions = {".cls", ".bas", ".frm"}
+    modules = set()
+    
+    for vb_file in project_path.rglob("*"):
+        if vb_file.suffix.lower() in vb_extensions:
+            relative = vb_file.relative_to(project_path)
+            if len(relative.parts) > 1:
+                modules.add(relative.parts[0])
+    
+    return sorted(modules)
+
+
+def analyze_by_module(project_path: str, output_dir: str):
+    """按模組分批分析"""
+    root = Path(project_path)
+    output = Path(output_dir)
+    
+    print("🔍 掃描專案結構...")
+    modules = discover_modules(root)
+    
+    if not modules:
+        print("   未發現子模組，將整體分析")
+        analyzer = VBProjectAnalyzer(project_path)
+        analyzer.analyze()
+        analyzer.export_results(str(output))
+        analyzer.print_summary()
+        return
+    
+    print(f"   發現 {len(modules)} 個模組: {', '.join(modules)}")
+    print()
+    
+    for i, module_name in enumerate(modules, 1):
+        module_path = root / module_name
+        module_output = output / module_name
+        
+        print(f"📁 [{i}/{len(modules)}] 分析模組: {module_name}")
+        print("-" * 50)
+        
+        try:
+            analyzer = VBProjectAnalyzer(str(module_path))
+            analyzer.analyze()
+            analyzer.export_results(str(module_output))
+            
+            stats = analyzer.analysis_results.get("file_statistics", {})
+            rules = analyzer.analysis_results.get("business_rules", {})
+            print(f"   ✅ 完成：{stats.get('total_files', 0)} 檔案, {rules.get('total_rules', 0)} 條規則")
+        except Exception as e:
+            print(f"   ❌ 錯誤: {e}")
+        
+        print()
+    
+    print("=" * 50)
+    print(f"✅ 全部完成！輸出目錄: {output}")
+
+
+def analyze_by_batch(project_path: str, output_dir: str, batch_size: int = 50):
+    """按檔案數量分批分析"""
+    root = Path(project_path)
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    
+    print("🔍 掃描所有 VB 檔案...")
+    scanner = VBScanner(project_path)
+    all_files = scanner.scan()
+    
+    total_files = len(all_files)
+    print(f"   找到 {total_files} 個 VB 檔案")
+    print()
+    
+    if total_files == 0:
+        print("❌ 沒有找到 VB 檔案")
+        return
+    
+    # 初始化工具
+    parser = VBParser()
+    sql_extractor = SQLExtractor()
+    schema_inferrer = SchemaInferrer()
+    ble = BusinessLogicExtractor()
+    
+    # 分批處理
+    total_batches = (total_files + batch_size - 1) // batch_size
+    
+    for batch_num in range(total_batches):
+        start_idx = batch_num * batch_size
+        end_idx = min(start_idx + batch_size, total_files)
+        batch = all_files[start_idx:end_idx]
+        
+        print(f"📦 批次 {batch_num + 1}/{total_batches}: 處理檔案 {start_idx + 1} ~ {end_idx}")
+        
+        for vb_file in batch:
+            # 解析
+            parser.parse(vb_file)
+            
+            # 萃取
+            if vb_file.module:
+                for func in vb_file.module.functions:
+                    sql_extractor.extract_from_code(
+                        func.body,
+                        source_file=vb_file.filename,
+                        source_function=func.name,
+                    )
+                    ble.extract_from_function(
+                        func.name,
+                        func.body,
+                        source_file=vb_file.filename,
+                    )
+        
+        print(f"   ✅ 完成 {len(batch)} 個檔案")
+    
+    # Schema 推斷
+    print("\n🗄️ 推斷 Schema...")
+    schema_inferrer.process_sql_extractor_results(sql_extractor)
+    schema_inferrer.infer_additional_types()
+    
+    # 輸出結果
+    print("📄 匯出結果...")
+    
+    # Schema
+    schema_inferrer.export_json(str(output / "inferred_schema.json"))
+    
+    # ER 圖
+    with open(output / "entity_diagram.mermaid", "w", encoding="utf-8") as f:
+        f.write(schema_inferrer.generate_mermaid_erd())
+    
+    # 業務規則
+    with open(output / "business_rules.md", "w", encoding="utf-8") as f:
+        f.write("# 業務規則\n\n")
+        for rule in ble.rules:
+            f.write(ble.generate_decision_table_markdown(rule))
+            f.write("\n---\n\n")
+    
+    # 摘要
+    print()
+    print("=" * 50)
+    print("📊 分析摘要")
+    print("=" * 50)
+    print(f"📁 總檔案數: {total_files}")
+    print(f"🗄️ 識別表格: {len(sql_extractor.tables)}")
+    print(f"💼 業務規則: {len(ble.rules)}")
+    print(f"📂 輸出目錄: {output}")
+    print()
+    print("✅ 分析完成！")
+
+
+def analyze_full(project_path: str, output_dir: str):
+    """完整分析（不分批）"""
+    analyzer = VBProjectAnalyzer(project_path)
+    analyzer.analyze()
+    analyzer.export_results(output_dir)
+    analyzer.print_summary()
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="VB to Java Migration Toolkit",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+範例:
+  # 完整分析
+  python cli.py analyze ./my-vb-project
+  
+  # 按模組分批分析
+  python cli.py analyze ./my-vb-project --by-module
+  
+  # 按檔案數量分批（每批 30 個）
+  python cli.py analyze ./my-vb-project --batch-size 30
+        """
+    )
+    
+    subparsers = parser.add_subparsers(dest="command", help="可用命令")
+    
+    # analyze 命令
+    analyze_parser = subparsers.add_parser("analyze", help="分析 VB 專案")
+    analyze_parser.add_argument("project_path", help="VB 專案路徑")
+    analyze_parser.add_argument(
+        "-o", "--output",
+        default="./output",
+        help="輸出目錄（預設: ./output）"
+    )
+    analyze_parser.add_argument(
+        "--by-module",
+        action="store_true",
+        help="按子目錄（模組）分批分析"
+    )
+    analyze_parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=0,
+        help="按檔案數量分批（指定每批檔案數）"
+    )
+    
+    # scan 命令
+    scan_parser = subparsers.add_parser("scan", help="僅掃描專案結構")
+    scan_parser.add_argument("project_path", help="VB 專案路徑")
+    
+    args = parser.parse_args()
+    
+    if args.command == "analyze":
+        project = Path(args.project_path)
+        if not project.exists():
+            print(f"❌ 路徑不存在: {project}")
+            return 1
+        
+        print("=" * 60)
+        print("🚀 VB to Java Migration Toolkit")
+        print("=" * 60)
+        print()
+        
+        if args.by_module:
+            analyze_by_module(args.project_path, args.output)
+        elif args.batch_size > 0:
+            analyze_by_batch(args.project_path, args.output, args.batch_size)
+        else:
+            analyze_full(args.project_path, args.output)
+        
+        return 0
+    
+    elif args.command == "scan":
+        project = Path(args.project_path)
+        if not project.exists():
+            print(f"❌ 路徑不存在: {project}")
+            return 1
+        
+        print("🔍 掃描專案...")
+        scanner = VBScanner(args.project_path)
+        files = scanner.scan()
+        stats = scanner.get_statistics(files)
+        
+        print(f"\n📊 掃描結果:")
+        print(f"   總檔案數: {stats['total_files']}")
+        print(f"   類別模組 (.cls): {stats['by_type']['class']}")
+        print(f"   標準模組 (.bas): {stats['by_type']['module']}")
+        print(f"   表單模組 (.frm): {stats['by_type']['form']}")
+        print(f"   總行數: {stats['total_lines']}")
+        
+        modules = discover_modules(project)
+        if modules:
+            print(f"\n📁 發現模組目錄:")
+            for m in modules:
+                print(f"   - {m}")
+        
+        return 0
+    
+    else:
+        parser.print_help()
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,40 @@
+{
+  "tables": {
+    "Products": {
+      "name": "Products",
+      "columns": {},
+      "usage_count": 1,
+      "source_files": [
+        "ProductForm.frm"
+      ]
+    },
+    "Customers": {
+      "name": "Customers",
+      "columns": {},
+      "usage_count": 1,
+      "source_files": [
+        "Customer.cls"
+      ]
+    },
+    "Orders": {
+      "name": "Orders",
+      "columns": {},
+      "usage_count": 1,
+      "source_files": [
+        "OrderModule.bas"
+      ]
+    },
+    "OrderDetails": {
+      "name": "OrderDetails",
+      "columns": {},
+      "usage_count": 1,
+      "source_files": [
+        "OrderModule.bas"
+      ]
+    }
+  },
+  "summary": {
+    "total_tables": 4,
+    "total_columns": 0
+  }
+}
