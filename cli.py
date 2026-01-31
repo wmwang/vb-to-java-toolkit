@@ -2,21 +2,27 @@
 """
 VB to Java Migration Toolkit - CLI 命令列工具
 
-使用方式：
-    poetry run python cli.py analyze /path/to/vb/project
-    poetry run python cli.py analyze /path/to/vb/project --batch-size 50
-    poetry run python cli.py analyze /path/to/vb/project --by-module
+核心命令：
+    python cli.py discover ./legacy-vb        # AI 分析依賴，建議遷移順序
+    python cli.py understand ./legacy-vb      # AI 解說業務邏輯
+    python cli.py analyze ./legacy-vb         # 靜態分析
 """
 
 import sys
 import asyncio
+import os
 from pathlib import Path
 from typing import Optional
 import argparse
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from src.parsers import VBScanner, VBParser
 from src.extractors import SQLExtractor, SchemaInferrer, BusinessLogicExtractor
 from src.analyzer import VBProjectAnalyzer
+from src.migration import DependencyAnalyzer, MigrationAdvisor
+from src.llm import LLMClient, LLMConfig, BusinessLogicExplainer
 
 
 def discover_modules(project_path: Path) -> list[str]:
@@ -173,20 +179,148 @@ def analyze_full(project_path: str, output_dir: str):
     analyzer.print_summary()
 
 
+def discover_dependencies(project_path: str, output_dir: str):
+    """
+    [AI] 探索專案依賴關係並建議遷移順序
+    """
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    
+    print("=" * 60)
+    print("🔍 VB Legacy Analyzer - Discover")
+    print("=" * 60)
+    print()
+    
+    # Step 1: 分析依賴關係
+    analyzer = DependencyAnalyzer(project_path)
+    graph = analyzer.analyze()
+    
+    # 匯出依賴圖
+    analyzer.export_json(str(output / "dependency_graph.json"))
+    analyzer.export_mermaid(str(output / "dependency_graph.mermaid"))
+    print(f"📄 匯出依賴圖: {output}")
+    print()
+    
+    # Step 2: AI 分析並建議遷移順序
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        print("⚠️ 未設定 OPENAI_API_KEY，跳過 AI 分析")
+        print("   請在 .env 檔案中設定 OPENAI_API_KEY")
+        return
+    
+    print("🤖 AI 正在分析依賴關係...")
+    print("-" * 40)
+    
+    config = LLMConfig(
+        api_key=api_key,
+        base_url=os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1"),
+        model=os.environ.get("LLM_MODEL", "gpt-4o-mini"),
+        debug=True,
+    )
+    llm_client = LLMClient(config)
+    advisor = MigrationAdvisor(llm_client)
+    
+    # 執行 AI 分析
+    async def run_analysis():
+        def on_chunk(chunk: str):
+            print(chunk, end="", flush=True)
+        
+        advice = await advisor.analyze_and_advise(graph, on_chunk=on_chunk)
+        return advice
+    
+    advice = asyncio.run(run_analysis())
+    print()
+    print("-" * 40)
+    
+    # 儲存 AI 建議
+    with open(output / "migration_advice.md", "w", encoding="utf-8") as f:
+        f.write("# AI 遷移建議\n\n")
+        f.write(advice.analysis)
+    
+    print(f"\n📄 AI 建議已儲存: {output / 'migration_advice.md'}")
+    print(f"\n✅ Discover 完成！")
+
+
+def understand_module(project_path: str, output_dir: str, module_filter: Optional[str] = None):
+    """
+    [AI] 深入理解業務邏輯
+    """
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    
+    print("=" * 60)
+    print("🧠 VB Legacy Analyzer - Understand")
+    print("=" * 60)
+    print()
+    
+    # Step 1: 分析專案
+    analyzer = VBProjectAnalyzer(project_path)
+    analyzer.analyze()
+    
+    # 取得業務規則
+    rules = analyzer.ble.rules
+    
+    if module_filter:
+        rules = [r for r in rules if module_filter.lower() in r.source_file.lower()]
+    
+    if not rules:
+        print("❌ 沒有找到業務規則")
+        return
+    
+    print(f"📋 找到 {len(rules)} 條業務規則")
+    print()
+    
+    # Step 2: AI 解說
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        print("⚠️ 未設定 OPENAI_API_KEY，跳過 AI 分析")
+        return
+    
+    print("🤖 AI 正在解說業務邏輯...")
+    print("-" * 40)
+    
+    config = LLMConfig(
+        api_key=api_key,
+        base_url=os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1"),
+        model=os.environ.get("LLM_MODEL", "gpt-4o-mini"),
+        debug=True,
+    )
+    llm_client = LLMClient(config)
+    explainer = BusinessLogicExplainer(llm_client)
+    
+    async def run_explain():
+        def on_progress(current: int, total: int, name: str):
+            print(f"\n[{current}/{total}] 解說: {name}")
+            print("-" * 30)
+        
+        results = await explainer.explain_rules_batch(rules, on_progress=on_progress)
+        return results
+    
+    asyncio.run(run_explain())
+    print()
+    print("-" * 40)
+    
+    # 儲存解說
+    markdown = explainer.export_explanations_markdown()
+    with open(output / "business_rules_explained.md", "w", encoding="utf-8") as f:
+        f.write(markdown)
+    
+    print(f"\n📄 解說已儲存: {output / 'business_rules_explained.md'}")
+    print(f"\n✅ Understand 完成！")
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="VB to Java Migration Toolkit",
+        description="VB to Java Migration Toolkit - AI 輔助遷移工具",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-範例:
-  # 完整分析
-  python cli.py analyze ./my-vb-project
-  
-  # 按模組分批分析
-  python cli.py analyze ./my-vb-project --by-module
-  
-  # 按檔案數量分批（每批 30 個）
-  python cli.py analyze ./my-vb-project --batch-size 30
+核心命令（AI 驅動）:
+  python cli.py discover ./legacy-vb     # AI 分析依賴，建議遷移順序
+  python cli.py understand ./legacy-vb   # AI 解說業務邏輯
+
+輔助命令:
+  python cli.py analyze ./legacy-vb      # 靜態分析（不調用 AI）
+  python cli.py scan ./legacy-vb         # 僅掃描專案結構
         """
     )
     
@@ -215,6 +349,17 @@ def main():
     # scan 命令
     scan_parser = subparsers.add_parser("scan", help="僅掃描專案結構")
     scan_parser.add_argument("project_path", help="VB 專案路徑")
+    
+    # discover 命令 [AI]
+    discover_parser = subparsers.add_parser("discover", help="[AI] 分析依賴，建議遷移順序")
+    discover_parser.add_argument("project_path", help="VB 專案路徑")
+    discover_parser.add_argument("-o", "--output", default="./output", help="輸出目錄")
+    
+    # understand 命令 [AI]
+    understand_parser = subparsers.add_parser("understand", help="[AI] 解說業務邏輯")
+    understand_parser.add_argument("project_path", help="VB 專案路徑")
+    understand_parser.add_argument("-o", "--output", default="./output", help="輸出目錄")
+    understand_parser.add_argument("--module", help="僅分析包含此關鍵字的模組")
     
     args = parser.parse_args()
     
@@ -262,6 +407,22 @@ def main():
             for m in modules:
                 print(f"   - {m}")
         
+        return 0
+    
+    elif args.command == "discover":
+        project = Path(args.project_path)
+        if not project.exists():
+            print(f"❌ 路徑不存在: {project}")
+            return 1
+        discover_dependencies(args.project_path, args.output)
+        return 0
+    
+    elif args.command == "understand":
+        project = Path(args.project_path)
+        if not project.exists():
+            print(f"❌ 路徑不存在: {project}")
+            return 1
+        understand_module(args.project_path, args.output, args.module)
         return 0
     
     else:

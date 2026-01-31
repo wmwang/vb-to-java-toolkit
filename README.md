@@ -1,60 +1,65 @@
-# VB to Java Migration AI Toolkit
+# VB Legacy Analyzer - AI 輔助遷移分析工具
 
-一套 AI 驅動的工具，用於將 VB 專案遷移到 Java Clean Architecture。
+將大型 VB 專案遷移至 Java 前，使用 AI 深入分析舊架構。
 
-## 功能特色
+## 核心功能（AI 驅動）
 
-- 🔍 **VB 程式碼解析** - AST 解析 VB 檔案結構
-- 📊 **SQL/Schema 萃取** - 從程式碼反推資料庫結構
-- 🧠 **業務邏輯提取 (BLE)** - 分離業務意圖與技術實作
-- ☕ **Java 程式碼生成** - 轉譯為 Clean Architecture 代碼
-- ✅ **行為驗證** - 確保遷移正確性
-- 🌐 **REST API** - FastAPI 服務端點
-
-## 專案結構
-
-```
-vb-to-java-toolkit/
-├── src/
-│   ├── parsers/          # VB 程式碼解析器
-│   ├── extractors/       # SQL/Schema/BLE 萃取器
-│   ├── generators/       # Java 程式碼生成器
-│   ├── verifiers/        # 行為驗證器
-│   ├── llm/              # LLM 客戶端
-│   └── api/              # FastAPI 服務
-├── examples/             # 示範 VB 專案
-├── tests/                # 測試
-└── docs/                 # 文件
-```
+| 命令 | 說明 | 輸出 |
+|------|------|------|
+| `discover` | 分析模組依賴，建議遷移順序 | `migration_advice.md` |
+| `understand` | 解說業務邏輯，識別風險 | `business_rules_explained.md` |
 
 ## 快速開始
 
-### 1. 環境設定（強烈建議使用虛擬環境）
+### 1. 環境設定
 
-**Windows:**
-```powershell
+```bash
 # 建立虛擬環境
 python -m venv venv
 
-# 啟動虛擬環境
+# 啟動（Windows）
 .\venv\Scripts\activate
-```
 
-**macOS / Linux:**
-```bash
-# 建立虛擬環境
-python3 -m venv venv
-
-# 啟動虛擬環境
+# 啟動（macOS/Linux）
 source venv/bin/activate
-```
 
-### 2. 安裝依賴
-
-```bash
-# 確保已啟動虛擬環境
+# 安裝依賴
 pip install -r requirements.txt
 ```
+
+### 2. 設定 API Key
+
+```bash
+cp .env.example .env
+# 編輯 .env，填入 OPENAI_API_KEY
+```
+
+### 3. 執行 AI 分析
+
+```bash
+# 探索專案依賴，AI 建議遷移順序
+python cli.py discover ./your-vb-project
+
+# 深入理解業務邏輯
+python cli.py understand ./your-vb-project
+
+# 只分析特定模組
+python cli.py understand ./your-vb-project --module Order
+```
+
+## 輸出範例
+
+**discover 輸出 (`migration_advice.md`)：**
+- 專案概覽
+- 遷移順序建議（含理由）
+- 風險模組識別
+- 遷移策略建議
+
+**understand 輸出 (`business_rules_explained.md`)：**
+- 業務規則說明
+- 決策邏輯
+- 邊界條件與風險
+- 建議測試案例
 
 ### 3. 設定環境變數
 
@@ -81,6 +86,8 @@ cp .env.example .env
 ### 方式一：使用 CLI 命令列工具
 適合本機批次處理或 CI/CD 整合。
 
+> ⚠️ **注意**：CLI 工具目前僅執行靜態分析（AST 解析），**不會** 調用 LLM API，因此不會消耗 Token 額度。
+
 #### 1. 掃描專案結構
 快速查看專案包含多少檔案與模組。
 ```bash
@@ -103,6 +110,8 @@ python cli.py analyze ./examples/sample-erp -o ./my-analysis-output
 ### 方式二：使用 Web API
 適合整合至網頁介面或其他系統。
 
+> 💡 **提示**：Web API 的 `/translate` 功能會調用 LLM 進行程式碼轉譯，**會消耗 Token 額度**。
+
 #### 1. 啟動 API 服務
 ```bash
 python -m uvicorn src.api.main:app --reload
@@ -112,11 +121,14 @@ python -m uvicorn src.api.main:app --reload
 
 #### 2. 主要 API 端點
 
-| 方法 | 路徑 | 說明 |
-|------|------|------|
-| POST | `/analyze` | 分析 VB 專案 (非同步任務) |
-| POST | `/generate` | 生成 Java 專案 |
-| GET | `/status/{job_id}` | 查詢任務狀態 |
+| 方法 | 路徑 | 說明 | LLM 調用 |
+|------|------|------|:---:|
+| POST | `/analyze` | 分析 VB 專案 (非同步任務) | ❌ |
+| POST | `/translate` | 翻譯程式碼 (SSE) | ✅ |
+| POST | `/generate` | 生成 Java 專案 | ❌* |
+| GET | `/status/{job_id}` | 查詢任務狀態 | ❌ |
+
+*\*註：generate 目前主要依賴靜態分析結果，但在進階模式下可能會調用 LLM。*
 
 ---
 

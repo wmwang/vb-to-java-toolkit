@@ -1,0 +1,82 @@
+{
+  "modules": {
+    "frmProduct": {
+      "name": "frmProduct",
+      "file_path": "examples/sample-erp/ProductForm.frm",
+      "module_type": "frm",
+      "calls_to": [],
+      "called_by": [],
+      "functions": [
+        "Form_Load",
+        "cmdSave_Click",
+        "cmdDelete_Click",
+        "lstProducts_Click",
+        "LoadProducts",
+        "LoadProductDetail",
+        "ClearForm",
+        "CheckStock",
+        "UpdateStock",
+        "SetConnection"
+      ],
+      "external_refs": [
+        "ADODB"
+      ],
+      "complexity_score": 15
+    },
+    "Customer": {
+      "name": "Customer",
+      "file_path": "examples/sample-erp/Customer.cls",
+      "module_type": "cls",
+      "calls_to": [],
+      "called_by": [],
+      "functions": [
+        "LoadFromDB",
+        "SaveToDB",
+        "CalculateDiscount",
+        "UpgradeMemberLevel",
+        "Class_Initialize",
+        "Class_Terminate",
+        "SetConnection"
+      ],
+      "external_refs": [
+        "ADODB"
+      ],
+      "complexity_score": 12
+    },
+    "OrderModule": {
+      "name": "OrderModule",
+      "file_path": "examples/sample-erp/OrderModule.bas",
+      "module_type": "bas",
+      "calls_to": [],
+      "called_by": [],
+      "functions": [
+        "CreateOrder",
+        "CalculateOrderTotal",
+        "GetDiscountRate",
+        "CancelOrder",
+        "UpdateOrderStatus",
+        "GetCustomerOrders",
+        "InitModule"
+      ],
+      "external_refs": [
+        "ADODB"
+      ],
+      "complexity_score": 12
+    }
+  },
+  "edges": [],
+  "statistics": {
+    "total_modules": 3,
+    "total_edges": 0,
+    "root_modules": [
+      "frmProduct",
+      "OrderModule",
+      "Customer"
+    ],
+    "leaf_modules": [
+      "frmProduct",
+      "Customer",
+      "OrderModule"
+    ]
+  }
+}
