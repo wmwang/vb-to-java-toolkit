@@ -56,36 +56,76 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. 執行服務與測試
+### 3. 設定環境變數
 
-```bash
-# 啟動 API 服務
-python -m uvicorn src.api.main:app --reload
+複製範例設定檔並填入您的 OpenAI API Key：
 
-# 執行測試
-python run_tests.py
+**Windows:**
+```powershell
+copy .env.example .env
+# 編輯 .env 檔案，填入 OPENAI_API_KEY=sk-...
 ```
 
-## API 端點
+**macOS / Linux:**
+```bash
+cp .env.example .env
+# 編輯 .env 檔案，填入 OPENAI_API_KEY=sk-...
+```
+
+---
+
+## 📖 使用指南
+
+本工具提供兩種使用方式：**命令行工具 (CLI)** 與 **Web API**。
+
+### 方式一：使用 CLI 命令列工具
+適合本機批次處理或 CI/CD 整合。
+
+#### 1. 掃描專案結構
+快速查看專案包含多少檔案與模組。
+```bash
+python cli.py scan ./examples/sample-erp
+```
+
+#### 2. 分析整個專案
+執行完整分析（解析、SQL 萃取、Schema 推斷、業務邏輯提取），結果將匯出至 `./output`。
+```bash
+python cli.py analyze ./examples/sample-erp
+```
+
+#### 3. 指定輸出目錄
+```bash
+python cli.py analyze ./examples/sample-erp -o ./my-analysis-output
+```
+
+---
+
+### 方式二：使用 Web API
+適合整合至網頁介面或其他系統。
+
+#### 1. 啟動 API 服務
+```bash
+python -m uvicorn src.api.main:app --reload
+```
+
+啟動後，開啟瀏覽器訪問 `http://localhost:8000/docs` 可查看完整的 API 文件與測試介面。
+
+#### 2. 主要 API 端點
 
 | 方法 | 路徑 | 說明 |
 |------|------|------|
-| POST | `/analyze` | 分析 VB 專案 |
-| POST | `/translate` | 翻譯程式碼 (SSE) |
+| POST | `/analyze` | 分析 VB 專案 (非同步任務) |
 | POST | `/generate` | 生成 Java 專案 |
 | GET | `/status/{job_id}` | 查詢任務狀態 |
-| GET | `/stream/{job_id}` | SSE 串流進度 |
 
-啟動後訪問 `http://localhost:8000/docs` 查看 Swagger 文件。
+---
 
-## 環境變數
+## 開發者資訊
 
-| 變數名稱 | 用途 | 必要 |
-|----------|------|------|
-| `OPENAI_API_KEY` | OpenAI API 金鑰 | LLM 功能必要 |
-| `LLM_BASE_URL` | API Endpoint | 可選 |
-| `LLM_MODEL` | 模型名稱 | 可選（預設 gpt-4o-mini）|
+### 執行測試
+```bash
+python run_tests.py
+```
 
-## 授權
-
+### 授權
 MIT License
