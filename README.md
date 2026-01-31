@@ -29,24 +29,41 @@ vb-to-java-toolkit/
 
 ## 快速開始
 
-```bash
-# 方法 1: 使用 pip（推薦）
-pip install -r requirements.txt
+### 1. 環境設定（強烈建議使用虛擬環境）
 
-# 方法 2: 使用 Poetry（可選）
-poetry install
+**Windows:**
+```powershell
+# 建立虛擬環境
+python -m venv venv
+
+# 啟動虛擬環境
+.\venv\Scripts\activate
+```
+
+**macOS / Linux:**
+```bash
+# 建立虛擬環境
+python3 -m venv venv
+
+# 啟動虛擬環境
+source venv/bin/activate
+```
+
+### 2. 安裝依賴
+
+```bash
+# 確保已啟動虛擬環境
+pip install -r requirements.txt
+```
+
+### 3. 執行服務與測試
+
+```bash
+# 啟動 API 服務
+python -m uvicorn src.api.main:app --reload
 
 # 執行測試
 pytest tests/ -v
-
-# 啟動 API 服務
-uvicorn src.api.main:app --reload
-
-# 或使用 python 直接啟動
-python -m uvicorn src.api.main:app --reload
-
-# 執行基本分析測試
-python run_test.py
 ```
 
 ## API 端點
