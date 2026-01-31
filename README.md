@@ -30,17 +30,23 @@ vb-to-java-toolkit/
 ## 快速開始
 
 ```bash
-# 安裝依賴
+# 方法 1: 使用 pip（推薦）
+pip install -r requirements.txt
+
+# 方法 2: 使用 Poetry（可選）
 poetry install
 
 # 執行測試
-poetry run pytest tests/ -v
+pytest tests/ -v
 
 # 啟動 API 服務
-poetry run uvicorn src.api.main:app --reload
+uvicorn src.api.main:app --reload
+
+# 或使用 python 直接啟動
+python -m uvicorn src.api.main:app --reload
 
 # 執行基本分析測試
-poetry run python run_test.py
+python run_test.py
 ```
 
 ## API 端點
