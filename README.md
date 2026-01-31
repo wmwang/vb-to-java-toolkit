@@ -63,7 +63,7 @@ pip install -r requirements.txt
 python -m uvicorn src.api.main:app --reload
 
 # 執行測試
-pytest tests/ -v
+python run_tests.py
 ```
 
 ## API 端點
